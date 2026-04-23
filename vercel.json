@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "drs-know (1).html",
+      "src": "drs-know.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "/drs-know (1).html"
+      "dest": "/drs-know.html"
     }
   ]
 }
