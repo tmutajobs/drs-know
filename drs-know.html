@@ -804,7 +804,12 @@ async function showFinish() {
 async function saveToSpreadsheet(ans, aiAdvice) {
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbxbZK47RlK_w92N3vNiR04EUZUGMQQ0bJZUTC5NYS5VQHkeGbQ9PU8f3oY9_PwBPTtj/exec';
   try {
-    const payload = {
+    const fixedKeys = ['name','gender','age','menu','talk_style','future_menu'];
+    const otherEntries = Object.entries(ans)
+      .filter(([k]) => !fixedKeys.includes(k))
+      .map(([k, v]) => k + '：' + v)
+      .join(' / ');
+    const params = new URLSearchParams({
       name: ans.name || '',
       gender: ans.gender || '',
       age: ans.age || '',
@@ -812,14 +817,10 @@ async function saveToSpreadsheet(ans, aiAdvice) {
       talk_style: ans.talk_style || '',
       future_menu: ans.future_menu || '',
       ai_advice: aiAdvice || '',
-      other: JSON.stringify(Object.fromEntries(Object.entries(ans).filter(([k])=>!['name','gender','age','menu','talk_style','future_menu'].includes(k))))
-    };
-    await fetch(GAS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
+      other: otherEntries
     });
+    const img = new Image();
+    img.src = GAS_URL + '?' + params.toString();
   } catch(e) {
     console.error('スプレッドシート保存エラー:', e);
   }
